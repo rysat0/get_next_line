@@ -6,7 +6,7 @@
 /*   By: rysato <rysato@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 18:07:42 by rysato            #+#    #+#             */
-/*   Updated: 2025/05/09 07:11:08 by rysato           ###   ########.fr       */
+/*   Updated: 2025/05/12 19:25:08 by rysato           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 
 
 char	*get_next_line(int fd);
-char	*ft_strdup(const char *str);
+char	*ft_strndup(const char *str, size_t len);
 int		newline_detect(const char *str);
 char	*ft_strjoin_free(char *joined, char *buf, size_t read_bytes);
 char	*extract_line(char *joined);

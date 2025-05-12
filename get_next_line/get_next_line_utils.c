@@ -6,24 +6,20 @@
 /*   By: rysato <rysato@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 18:07:37 by rysato            #+#    #+#             */
-/*   Updated: 2025/05/09 11:56:11 by rysato           ###   ########.fr       */
+/*   Updated: 2025/05/12 19:25:06 by rysato           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-char	*ft_strdup(const char *str)
+char	*ft_strndup(const char *str, size_t len)
 {
 	char	*dst;
-	int		len;
-	int		i;
+	size_t		i;
 
-	len = 0;
 	i = 0;
 	if (str == NULL)
 		return (NULL);
-	while (str[len] != '\0')
-		len++;
 	dst = malloc(sizeof(char) * (len + 1));
 	if (dst == NULL)
 		return (NULL);
@@ -54,23 +50,23 @@ char	*ft_strjoin_free(char *joined, char *buf, size_t read_bytes)
 	size_t	len;
 	char	*new_joined;
 	char	*tmp;
-	char	*tmp_return;
+	char	*str_return;
 
 	len = 0;
 	tmp = joined;
 	while (joined[len] != '\0')
 		len++;
 	new_joined = malloc(sizeof(char) * (len + read_bytes + 1));
-	tmp_return = new_joined;
 	if (new_joined == NULL)
-		return (NULL);
+		return (free(joined), joined = NULL, NULL);
+	str_return = new_joined;
 	while (*joined != '\0')
 		*new_joined++ = *joined++;
 	while (*buf != '\0')
 		*new_joined++ = *buf++;
 	*new_joined = '\0';
 	free(tmp);
-	return (tmp_return);
+	return (str_return);
 }
 
 char	*extract_line(char *joined)
@@ -87,15 +83,9 @@ char	*extract_line(char *joined)
 		len++;
 	if (joined[len] == '\n')
 		len++;
-	line = malloc(sizeof(char) * (len + 1));
-	if (line == NULL)
-		return (NULL);
-	while (i < len)
-	{
-		line[i] = joined[i];
-		i++;
-	}
-	line[i] = '\0';
+	line = ft_strndup(joined, len);
+	if(line == NULL)
+		return(NULL);
 	return (line);
 }
 
@@ -119,15 +109,7 @@ char	*make_next_joined(char *joined)
 		len++;
 	if(len == 0)
 		return(free(tmp), NULL);
-	dst = malloc(sizeof(char) * (len + 1));
-	if (dst == NULL)
-		return (NULL);
-	while (i < len)
-	{
-		dst[i] = joined[i];
-		i++;
-	}
-	dst[i] = '\0';
+	dst = ft_strndup(joined, len);
 	free(tmp);
 	return (dst);
 }
