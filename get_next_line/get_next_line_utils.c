@@ -6,7 +6,7 @@
 /*   By: rysato <rysato@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 18:07:37 by rysato            #+#    #+#             */
-/*   Updated: 2025/05/12 19:25:06 by rysato           ###   ########.fr       */
+/*   Updated: 2025/05/15 17:09:56 by rysato           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 char	*ft_strndup(const char *str, size_t len)
 {
 	char	*dst;
-	size_t		i;
+	size_t	i;
 
 	i = 0;
 	if (str == NULL)
@@ -54,6 +54,8 @@ char	*ft_strjoin_free(char *joined, char *buf, size_t read_bytes)
 
 	len = 0;
 	tmp = joined;
+	if (joined == NULL)
+		return (ft_strndup(buf, read_bytes));
 	while (joined[len] != '\0')
 		len++;
 	new_joined = malloc(sizeof(char) * (len + read_bytes + 1));
@@ -72,11 +74,9 @@ char	*ft_strjoin_free(char *joined, char *buf, size_t read_bytes)
 char	*extract_line(char *joined)
 {
 	char	*line;
-	size_t		len;
-	size_t		i;
+	size_t	len;
 
 	len = 0;
-	i = 0;
 	if (joined == NULL || *joined == '\0')
 		return (NULL);
 	while (joined[len] != '\0' && joined[len] != '\n')
@@ -84,8 +84,8 @@ char	*extract_line(char *joined)
 	if (joined[len] == '\n')
 		len++;
 	line = ft_strndup(joined, len);
-	if(line == NULL)
-		return(NULL);
+	if (line == NULL)
+		return (NULL);
 	return (line);
 }
 
@@ -94,21 +94,19 @@ char	*make_next_joined(char *joined)
 	char	*dst;
 	char	*tmp;
 	size_t	len;
-	size_t 	i;
 
-	i = 0;
 	len = 0;
 	tmp = joined;
-	if(joined == NULL)
-		return(NULL);
+	if (joined == NULL)
+		return (NULL);
 	while (*joined != '\0' && *joined != '\n')
 		joined++;
-	if(*joined == '\n')
+	if (*joined == '\n')
 		joined++;
 	while (joined[len] != '\0')
 		len++;
-	if(len == 0)
-		return(free(tmp), NULL);
+	if (len == 0)
+		return (free(tmp), NULL);
 	dst = ft_strndup(joined, len);
 	free(tmp);
 	return (dst);

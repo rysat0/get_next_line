@@ -6,23 +6,21 @@
 /*   By: rysato <rysato@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 18:07:42 by rysato            #+#    #+#             */
-/*   Updated: 2025/05/12 19:25:08 by rysato           ###   ########.fr       */
+/*   Updated: 2025/05/15 16:11:49 by rysato           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 
-#ifndef BUFFER_SIZE
-# define BUFFER_SIZE 16
-#endif
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 16
+# endif
 
-# include <stdlib.h>
-# include <unistd.h>
 # include <fcntl.h>
 # include <stdio.h>
-
-
+# include <stdlib.h>
+# include <unistd.h>
 
 char	*get_next_line(int fd);
 char	*ft_strndup(const char *str, size_t len);

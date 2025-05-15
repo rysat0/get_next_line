@@ -6,78 +6,85 @@
 /*   By: rysato <rysato@student.42tokyo.jp>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/06 18:07:39 by rysato            #+#    #+#             */
-/*   Updated: 2025/05/12 19:25:04 by rysato           ###   ########.fr       */
+/*   Updated: 2025/05/15 19:31:40 by rysato           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+static ssize_t	fill_joined(int fd, char **joined, char *buf)
+{
+	ssize_t	rb;
+
+	rb = 1;
+	while (!newline_detect(*joined))
+	{
+		rb = read(fd, buf, BUFFER_SIZE);
+		if (rb <= 0)
+			break ;
+		buf[rb] = '\0';
+		if (*joined == NULL)
+			*joined = ft_strndup(buf, (size_t)rb);
+		else
+			*joined = ft_strjoin_free(*joined, buf, rb);
+		if (*joined == NULL)
+			return (-2);
+	}
+	return (rb);
+}
+
 char	*get_next_line(int fd)
 {
 	static char	*joined;
-	char		buf[BUFFER_SIZE + 1];
-	ssize_t		read_bytes;
-	char		*oneline;
+	char		*buf;
+	ssize_t		st;
+	char		*line;
 
-	while (!newline_detect(joined))
-	{
-		read_bytes = read(fd, buf, BUFFER_SIZE);
-		if (read_bytes <= 0)
-			break;
-		buf[read_bytes] = '\0';
-		if (joined == NULL)
-			joined = ft_strndup(buf, (size_t)read_bytes);
-		else
-			joined = ft_strjoin_free(joined, buf, read_bytes);
-        if(joined == NULL)
-            return(NULL);
-	}
-    if(joined == NULL|| *joined == '\0')
-        return(NULL);
-    if(read_bytes < 0)
-        return(free(joined), joined = NULL,  NULL);
-	oneline = extract_line(joined);
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	buf = malloc(BUFFER_SIZE + 1);
+	if (buf == NULL)
+		return (NULL);
+	st = fill_joined(fd, &joined, buf);
+	if (st == -2)
+		return (free(buf), NULL);
+	if (st < 0)
+		return (free(buf), free(joined), joined = NULL, NULL);
+	if (joined == NULL || *joined == '\0')
+		return (free(buf), NULL);
+	line = extract_line(joined);
 	joined = make_next_joined(joined);
-	return (oneline);
+	return (free(buf), line);
 }
 
-// static void	print_fd(int fd, const char *label)
+// char	*get_next_line(int fd)
 // {
-//     char    *line;
-//     int     n = 1;
+// 	static char	*joined;
+// 	char		*buf;
+// 	ssize_t		read_bytes;
+// 	char		*oneline;
 
-//     printf("\n---- %s ----\n", label);
-//     while ((line = get_next_line(fd)) != NULL)
-//     {
-//         printf("%03d: %s", n++, line);
-//         free(line);
-//     }
-//     printf("---- EOF %s ----\n", label);
-// }
-
-// int	main(int argc, char **argv)
-// {
-//     if (argc == 1)
-//     {
-//         /* 引数無し: 標準入力をそのままテスト */
-//         print_fd(STDIN_FILENO, "STDIN");
-//     }
-//     else
-//     {
-//         int i = 1;
-//         while (i < argc)
-//         {
-//             int fd = open(argv[i], O_RDONLY);
-//             if (fd < 0)
-//             {
-//                 perror(argv[i]);
-//                 ++i;
-//                 continue;
-//             }
-//             print_fd(fd, argv[i]);
-//             close(fd);
-//             ++i;
-//         }
-//     }
-//     return (0);
+// 	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
+// 	if (buf == NULL)
+// 		return (NULL);
+// 	while ((joined == NULL || !newline_detect(joined)))
+// 	{
+// 		read_bytes = read(fd, buf, BUFFER_SIZE);
+// 		if (read_bytes <= 0)
+// 			break ;
+// 		buf[read_bytes] = '\0';
+// 		if (joined == NULL)
+// 			joined = ft_strndup(buf, (size_t)read_bytes);
+// 		else
+// 			joined = ft_strjoin_free(joined, buf, read_bytes);
+// 		if (joined == NULL)
+// 			return (free(buf), NULL);
+// 	}
+// 	if (read_bytes < 0)
+// 		return (free(joined), joined = NULL, free(buf), NULL);
+// 	if (joined == NULL || *joined == '\0')
+// 		return (free(buf), NULL);
+// 	oneline = extract_line(joined);
+// 	joined = make_next_joined(joined);
+// 	return (free(buf), oneline);
 // }
